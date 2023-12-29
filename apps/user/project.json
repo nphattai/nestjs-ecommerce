@@ -14,7 +14,13 @@
         "outputPath": "dist/apps/user",
         "main": "apps/user/src/main.ts",
         "tsConfig": "apps/user/tsconfig.app.json",
-        "assets": ["apps/user/src/assets"],
+        "assets": [
+          {
+            "input": "proto/user",
+            "glob": "**/*",
+            "output": "proto/user"
+          }
+        ],
         "webpackConfig": "apps/user/webpack.config.js"
       },
       "configurations": {
