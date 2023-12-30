@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for App in 'user' ; do
+for App in 'user' 'product' ; do
   protoc \
     --plugin=./node_modules/.bin/protoc-gen-ts_proto \
     --ts_proto_opt=nestJs=true \

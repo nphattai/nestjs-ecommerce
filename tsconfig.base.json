@@ -15,7 +15,9 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@api/grpc/user": ["libs/api/grpc/user/src/index.ts"]
+      "@api/grpc/user": ["libs/api/grpc/user/src/index.ts"],
+      "@api/grpc/product": ["libs/api/grpc/product/src/index.ts"],
+
     }
   },
   "exclude": ["node_modules", "tmp"]

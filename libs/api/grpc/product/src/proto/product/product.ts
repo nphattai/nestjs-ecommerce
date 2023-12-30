@@ -2,35 +2,35 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
-export interface HelloUserReq {
+export interface HelloProductReq {
   name: string;
 }
 
-export interface HelloUserRes {
+export interface HelloProductRes {
   message: string;
 }
 
-export const USER_PACKAGE_NAME = 'user';
+export const PRODUCT_PACKAGE_NAME = 'product';
 
-export interface UserServiceClient {
-  helloUser(request: HelloUserReq): Observable<HelloUserRes>;
+export interface ProductServiceClient {
+  helloProduct(request: HelloProductReq): Observable<HelloProductRes>;
 }
 
-export interface UserServiceController {
-  helloUser(
-    request: HelloUserReq
-  ): Promise<HelloUserRes> | Observable<HelloUserRes> | HelloUserRes;
+export interface ProductServiceController {
+  helloProduct(
+    request: HelloProductReq
+  ): Promise<HelloProductRes> | Observable<HelloProductRes> | HelloProductRes;
 }
 
-export function UserServiceControllerMethods() {
+export function ProductServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['helloUser'];
+    const grpcMethods: string[] = ['helloProduct'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,
         method
       );
-      GrpcMethod('UserService', method)(
+      GrpcMethod('ProductService', method)(
         constructor.prototype[method],
         method,
         descriptor
@@ -42,7 +42,7 @@ export function UserServiceControllerMethods() {
         constructor.prototype,
         method
       );
-      GrpcStreamMethod('UserService', method)(
+      GrpcStreamMethod('ProductService', method)(
         constructor.prototype[method],
         method,
         descriptor
@@ -51,4 +51,4 @@ export function UserServiceControllerMethods() {
   };
 }
 
-export const USER_SERVICE_NAME = 'UserService';
+export const PRODUCT_SERVICE_NAME = 'ProductService';

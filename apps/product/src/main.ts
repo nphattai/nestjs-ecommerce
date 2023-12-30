@@ -1,4 +1,4 @@
-import { userClient } from '@api/grpc/user';
+import { productClient } from '@api/grpc/product';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -6,7 +6,7 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  app.connectMicroservice({ ...userClient });
+  app.connectMicroservice({ ...productClient });
 
   app.startAllMicroservices();
 
@@ -14,11 +14,11 @@ async function bootstrap() {
     new Logger().error(err);
   });
 
-  await app.listen(3000).then(() => {
-    Logger.log('Application is running', 'User');
+  await app.listen(3001).then(() => {
+    Logger.log('Application is running', 'Product');
   });
 }
 
 bootstrap().catch((error) => {
-  Logger.error('[User] Error starting application', error);
+  Logger.error('[Product] Error starting application', error);
 });

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package product;
+
+service ProductService {
+  rpc helloProduct(HelloProductReq) returns (HelloProductRes) {}
+}
+
+message HelloProductReq {
+  string name = 1;
+}
+
+message HelloProductRes {
+  string message = 1;
+}
