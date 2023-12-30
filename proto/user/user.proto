@@ -3,15 +3,13 @@ syntax = "proto3";
 package user;
 
 service UserService {
-  rpc Register(RegisterReq) returns (RegisterRes) {}
+  rpc helloUser(HelloUserReq) returns (HelloUserRes) {}
 }
 
-message RegisterReq {
-  string username = 1;
-  string password = 2;
+message HelloUserReq {
+  string name = 1;
 }
 
-message RegisterRes {
-  int32 code = 1;
-  string message = 2;
+message HelloUserRes {
+  string message = 1;
 }
