@@ -15,9 +15,12 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@api/grpc/user": ["libs/api/grpc/user/src/index.ts"],
       "@api/grpc/product": ["libs/api/grpc/product/src/index.ts"],
-
+      "@api/grpc/user": ["libs/api/grpc/user/src/index.ts"],
+      "@common/mapping": ["libs/common/mapping/src/index.ts"],
+      "@domain/config": ["libs/domain/config/src/index.ts"],
+      "@domain/data": ["libs/domain/data/src/index.ts"],
+      "@domain/storage": ["libs/domain/storage/src/index.ts"],
     }
   },
   "exclude": ["node_modules", "tmp"]
