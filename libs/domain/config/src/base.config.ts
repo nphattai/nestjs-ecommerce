@@ -3,6 +3,7 @@ import { AppEnv, IBaseConfig } from './type';
 export const baseConfig = (): IBaseConfig => ({
   app: {
     env: (process.env['APP_ENV'] as AppEnv) || AppEnv.LOCAL,
+    port: Number(process.env['PORT']),
   },
   db: {
     primaryHost: process.env['TYPEORM_HOST'] || 'localhost',

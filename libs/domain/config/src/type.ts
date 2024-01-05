@@ -8,6 +8,7 @@ export const enum AppEnv {
 export interface IBaseConfig {
   app: {
     env: AppEnv;
+    port: number;
   };
   db: {
     primaryHost: string;

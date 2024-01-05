@@ -14,8 +14,10 @@ async function bootstrap() {
     new Logger().error(err);
   });
 
-  await app.listen(3001).then(() => {
-    Logger.log('Application is running', 'Product');
+  const port = process.env.PORT || 4002;
+
+  await app.listen(port).then(() => {
+    Logger.log(`Product Application is running on port ${port}`, 'Product');
   });
 }
 
