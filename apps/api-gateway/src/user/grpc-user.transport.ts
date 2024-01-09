@@ -2,10 +2,9 @@ import { HelloUserReq, HelloUserRes, USER_CLIENT, USER_SERVICE_NAME, UserService
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { processGRPCResult } from '@util/grpc';
-import { IUserTransport } from '../../port';
 
 @Injectable()
-export class GrpcUserTransport implements IUserTransport {
+export class GrpcUserTransport {
   private readonly grpcClient: UserServiceClient;
 
   constructor(@Inject(USER_CLIENT) private client: ClientGrpc) {
