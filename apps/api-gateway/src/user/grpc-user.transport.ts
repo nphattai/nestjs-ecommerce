@@ -1,4 +1,13 @@
-import { HelloUserReq, HelloUserRes, USER_CLIENT, USER_SERVICE_NAME, UserServiceClient } from '@api/grpc/user';
+import {
+  GetUserInfoReq,
+  LoginUserReq,
+  RegisterUserReq,
+  USER_CLIENT,
+  USER_SERVICE_NAME,
+  UpdateUserInfoReq,
+  UserServiceClient,
+  ValidateUserReq,
+} from '@api/grpc/user';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { processGRPCResult } from '@util/grpc';
@@ -11,7 +20,23 @@ export class GrpcUserTransport {
     this.grpcClient = this.client.getService<UserServiceClient>(USER_SERVICE_NAME);
   }
 
-  async helloUser(req: HelloUserReq): Promise<HelloUserRes> {
-    return await processGRPCResult(this.grpcClient.helloUser(req));
+  register(request: RegisterUserReq) {
+    return processGRPCResult(this.grpcClient.register(request));
+  }
+
+  login(request: LoginUserReq) {
+    return processGRPCResult(this.grpcClient.login(request));
+  }
+
+  validate(request: ValidateUserReq) {
+    return processGRPCResult(this.grpcClient.validate(request));
+  }
+
+  getUserInfo(request: GetUserInfoReq) {
+    return processGRPCResult(this.grpcClient.getUserInfo(request));
+  }
+
+  updateUserInfo(request: UpdateUserInfoReq) {
+    return processGRPCResult(this.grpcClient.updateUserInfo(request));
   }
 }

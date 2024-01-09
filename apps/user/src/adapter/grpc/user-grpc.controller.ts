@@ -1,16 +1,39 @@
-import { HelloUserReq, HelloUserRes, UserServiceController, UserServiceControllerMethods } from '@api/grpc/user';
+import {
+  GetUserInfoReq,
+  LoginUserReq,
+  LoginUserRes,
+  RegisterUserReq,
+  RegisterUserRes,
+  UpdateUserInfoReq,
+  User,
+  UserServiceController,
+  UserServiceControllerMethods,
+  ValidateUserReq,
+} from '@api/grpc/user';
 import { Controller, Inject } from '@nestjs/common';
 import { Observable } from 'rxjs';
-import { HelloCmd, IUserService, USER_SERVICE } from '../../port';
+import { IUserService, RegisterUserCmd, USER_SERVICE } from '../../port';
 
 @Controller()
 @UserServiceControllerMethods()
 export class UserGrpcController implements UserServiceController {
   constructor(@Inject(USER_SERVICE) private readonly userService: IUserService) {}
 
-  helloUser(request: HelloUserReq): HelloUserRes | Promise<HelloUserRes> | Observable<HelloUserRes> {
-    const cmd: HelloCmd = { name: request.name };
-    const res = this.userService.hello(cmd);
-    return res;
+  register(request: RegisterUserReq): RegisterUserRes | Promise<RegisterUserRes> | Observable<RegisterUserRes> {
+    const cmd = RegisterUserCmd.init({ email: request.email, password: request.password });
+    return this.userService.register(cmd);
+  }
+
+  login(request: LoginUserReq): LoginUserRes | Promise<LoginUserRes> | Observable<LoginUserRes> {
+    throw new Error('Method not implemented.');
+  }
+  validate(request: ValidateUserReq): User | Promise<User> | Observable<User> {
+    throw new Error('Method not implemented.');
+  }
+  getUserInfo(request: GetUserInfoReq): User | Promise<User> | Observable<User> {
+    throw new Error('Method not implemented.');
+  }
+  updateUserInfo(request: UpdateUserInfoReq): User | Promise<User> | Observable<User> {
+    throw new Error('Method not implemented.');
   }
 }

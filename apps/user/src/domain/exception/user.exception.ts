@@ -2,13 +2,14 @@ import { ErrorInfo, ErrorMetadata, ErrorMetadataMap, Exception } from '@common/e
 import { HttpStatus } from '@nestjs/common';
 
 export enum UserError {
-  COMMON_ERROR = 'COMMON_ERROR',
+  REGISTER_FAILED = 'REGISTER_FAILED',
 }
 
 export const UserErrorMetadata: ErrorMetadataMap<UserError> = {
-  [UserError.COMMON_ERROR]: {
-    message: 'Common error',
+  [UserError.REGISTER_FAILED]: {
+    message: 'Register failed',
     httpStatus: HttpStatus.BAD_REQUEST,
+    internal: false,
   },
 };
 
