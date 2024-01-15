@@ -1,13 +1,37 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { AuthUserGuard } from '@api-gateway/guard';
+import { UpdateUserInfoReq } from '@api/grpc/user';
+import { Body, Controller, Get, Logger, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { RegisterUserDto } from './dto';
 import { GrpcUserTransport } from './grpc-user.transport';
-import { RegisterUserDto } from './dto/user.dto';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userTransport: GrpcUserTransport) {}
+  private logger: Logger;
+
+  constructor(private readonly userTransport: GrpcUserTransport) {
+    this.logger = new Logger(UserController.name);
+  }
 
   @Post('/register')
   async register(@Body() dto: RegisterUserDto) {
     return this.userTransport.register({ email: dto.email, password: dto.password });
+  }
+
+  @Post('/login')
+  async login(@Body() dto: RegisterUserDto) {
+    return this.userTransport.login({ email: dto.email, password: dto.password });
+  }
+
+  @UseGuards(AuthUserGuard)
+  @Get('/me')
+  getMe(@Request() req: any) {
+    return req.user;
+  }
+
+  @UseGuards(AuthUserGuard)
+  @Patch('/update-info')
+  updateUserInfo(@Request() req: any, @Body() updateUserDto: any) {
+    const request: UpdateUserInfoReq = { id: req.user.id, ...updateUserDto };
+    return this.userTransport.updateUserInfo(request);
   }
 }

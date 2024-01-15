@@ -1,6 +1,6 @@
 import { IBaseConfig, baseConfig } from '@domain/config';
 
-export interface IUserConfig extends IBaseConfig {
+export interface IGatewayConfig extends IBaseConfig {
   jwt: {
     jwtAccessSecret: string;
     jwtAccessExpiresIn: number;
@@ -9,7 +9,7 @@ export interface IUserConfig extends IBaseConfig {
   };
 }
 
-export default (): IUserConfig => ({
+export default (): IGatewayConfig => ({
   ...baseConfig(),
   jwt: {
     jwtAccessSecret: process.env.JWT_ACCESS_SECRET || 'INFINA',

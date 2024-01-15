@@ -9,7 +9,7 @@ export class User extends BaseModel {
   @Expose() phone: string;
   @Expose() email: string;
 
-  static from(o: ModelOptional<User, 'firstName' | 'lastName' | 'phone'>) {
+  static from(o: ModelOptional<User, 'password' | 'firstName' | 'lastName' | 'phone'>) {
     return toInstance(User, o);
   }
 }

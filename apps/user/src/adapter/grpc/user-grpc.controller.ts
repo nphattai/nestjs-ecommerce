@@ -1,18 +1,25 @@
 import {
   GetUserInfoReq,
   LoginUserReq,
-  LoginUserRes,
   RegisterUserReq,
   RegisterUserRes,
   UpdateUserInfoReq,
-  User,
   UserServiceController,
   UserServiceControllerMethods,
-  ValidateUserReq,
 } from '@api/grpc/user';
 import { Controller, Inject } from '@nestjs/common';
+import {
+  GetUserInfoCmd,
+  GetUserInfoResult,
+  IUserService,
+  LoginUserCmd,
+  LoginUserResult,
+  RegisterUserCmd,
+  USER_SERVICE,
+  UpdateUserCmd,
+  UpdateUserInfoResult,
+} from '@user/port';
 import { Observable } from 'rxjs';
-import { IUserService, RegisterUserCmd, USER_SERVICE } from '../../port';
 
 @Controller()
 @UserServiceControllerMethods()
@@ -24,16 +31,23 @@ export class UserGrpcController implements UserServiceController {
     return this.userService.register(cmd);
   }
 
-  login(request: LoginUserReq): LoginUserRes | Promise<LoginUserRes> | Observable<LoginUserRes> {
-    throw new Error('Method not implemented.');
+  async login(request: LoginUserReq) {
+    const cmd = LoginUserCmd.init({ email: request.email, password: request.password });
+    const result = await this.userService.login(cmd);
+
+    return LoginUserResult.toGrpc(result);
   }
-  validate(request: ValidateUserReq): User | Promise<User> | Observable<User> {
-    throw new Error('Method not implemented.');
+
+  async getUserInfo(request: GetUserInfoReq) {
+    const cmd = GetUserInfoCmd.init({ userId: request.userId });
+    const result = await this.userService.getUserInfo(cmd);
+
+    return GetUserInfoResult.toGrpc(result);
   }
-  getUserInfo(request: GetUserInfoReq): User | Promise<User> | Observable<User> {
-    throw new Error('Method not implemented.');
-  }
-  updateUserInfo(request: UpdateUserInfoReq): User | Promise<User> | Observable<User> {
-    throw new Error('Method not implemented.');
+
+  async updateUserInfo(req: UpdateUserInfoReq) {
+    const cmd = UpdateUserCmd.init({ ...req });
+    const result = await this.userService.updateUserInfo(cmd);
+    return UpdateUserInfoResult.toGrpc(result);
   }
 }

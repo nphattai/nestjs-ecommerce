@@ -2,13 +2,15 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 
-export interface User {
+export interface UserDetailRes {
   id: number;
   email: string;
-  phone: string;
-  password: string;
-  firstName: string;
-  lastName: string;
+  phone?: string | undefined;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  pid: string;
+  createdAt: number;
+  updatedAt: number;
 }
 
 export interface RegisterUserReq {
@@ -27,25 +29,25 @@ export interface LoginUserReq {
 }
 
 export interface LoginUserRes {
-  user: User | undefined;
+  user: UserDetailRes | undefined;
   accessToken: string;
   refreshToken: string;
 }
 
-export interface ValidateUserReq {
-  accessToken: string;
+export interface GetUserInfoReq {
+  userId: number;
 }
 
-export interface GetUserInfoReq {
-  accessToken: string;
+export interface GetUserInfoRes {
+  user: UserDetailRes | undefined;
 }
 
 export interface UpdateUserInfoReq {
   id: number;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
+  firstName?: string | undefined;
+  lastName?: string | undefined;
+  phone?: string | undefined;
+  email?: string | undefined;
 }
 
 export const USER_PACKAGE_NAME = 'user';
@@ -55,11 +57,9 @@ export interface UserServiceClient {
 
   login(request: LoginUserReq): Observable<LoginUserRes>;
 
-  validate(request: ValidateUserReq): Observable<User>;
+  getUserInfo(request: GetUserInfoReq): Observable<UserDetailRes>;
 
-  getUserInfo(request: GetUserInfoReq): Observable<User>;
-
-  updateUserInfo(request: UpdateUserInfoReq): Observable<User>;
+  updateUserInfo(request: UpdateUserInfoReq): Observable<UserDetailRes>;
 }
 
 export interface UserServiceController {
@@ -67,16 +67,14 @@ export interface UserServiceController {
 
   login(request: LoginUserReq): Promise<LoginUserRes> | Observable<LoginUserRes> | LoginUserRes;
 
-  validate(request: ValidateUserReq): Promise<User> | Observable<User> | User;
+  getUserInfo(request: GetUserInfoReq): Promise<UserDetailRes> | Observable<UserDetailRes> | UserDetailRes;
 
-  getUserInfo(request: GetUserInfoReq): Promise<User> | Observable<User> | User;
-
-  updateUserInfo(request: UpdateUserInfoReq): Promise<User> | Observable<User> | User;
+  updateUserInfo(request: UpdateUserInfoReq): Promise<UserDetailRes> | Observable<UserDetailRes> | UserDetailRes;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['register', 'login', 'validate', 'getUserInfo', 'updateUserInfo'];
+    const grpcMethods: string[] = ['register', 'login', 'getUserInfo', 'updateUserInfo'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
       GrpcMethod('UserService', method)(constructor.prototype[method], method, descriptor);

@@ -1,15 +1,16 @@
+import { UserDetailRes } from '@api/grpc/user';
+import { fromDateToUnix } from '@common/datetime';
 import { BaseCmd, BaseDTO } from '@domain/data';
-import { User, UserAddress, UserPayment } from '../../domain/model';
 import { Expose } from 'class-transformer';
+import { User, UserAddress, UserPayment } from '../../domain/model';
 
 export const USER_SERVICE = Symbol('USER_SERVICE');
 
 export interface IUserService {
   register(cmd: RegisterUserCmd): Promise<RegisterUserResult>;
   login(cmd: LoginUserCmd): Promise<LoginUserResult>;
-  validate(cmd: ValidateUserCmd): Promise<User>;
-  getUserInfo(cmd: GetUserInfoCmd): Promise<User>;
-  updateUserInfo(cmd: UpdateUserCmd): Promise<User>;
+  getUserInfo(cmd: GetUserInfoCmd): Promise<GetUserInfoResult>;
+  updateUserInfo(cmd: UpdateUserCmd): Promise<UpdateUserInfoResult>;
   createUserAddress(cmd: CreateUserAddressCmd): Promise<UserAddress>;
   getUserAddressDetail(cmd: GetUserAddressDetailCmd): Promise<UserAddress>;
   getListUserAddress(cmd: GetListUserAddressCmd): Promise<UserAddress[]>;
@@ -19,6 +20,29 @@ export interface IUserService {
   getListUserPayment(cmd: GetListUserPaymentCmd): Promise<UserPayment[]>;
   deleteUserPayment(cmd: DeleteUserPaymentCmd): Promise<DeleteUserPaymentResult>;
 }
+
+export class UserDetailResult extends BaseDTO {
+  @Expose() firstName: string;
+  @Expose() lastName: string;
+  @Expose() phone: string;
+  @Expose() email: string;
+  @Expose() id: number;
+  @Expose() pid: string;
+  @Expose() createdAt: Date;
+  @Expose() updatedAt: Date;
+
+  static toGrpc(userDetail: UserDetailResult): UserDetailRes {
+    return {
+      ...userDetail,
+      createdAt: fromDateToUnix(userDetail.createdAt), //new Date(userDetail.createdAt).getTime(),
+      updatedAt: fromDateToUnix(userDetail.updatedAt), // new Date(userDetail.updatedAt).getTime(),
+    };
+  }
+}
+
+export class GetUserInfoResult extends UserDetailResult {}
+
+export class UpdateUserInfoResult extends UserDetailResult {}
 
 export class RegisterUserCmd extends BaseCmd {
   @Expose() email: string;
@@ -30,67 +54,76 @@ export class RegisterUserResult extends BaseDTO {
   @Expose() message: string;
 }
 
-export type LoginUserCmd = {
-  email: string;
-  password: string;
-};
+export class LoginUserCmd extends BaseCmd {
+  @Expose() email: string;
+  @Expose() password: string;
+}
 
-export type LoginUserResult = {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-};
+export class LoginUserResult extends BaseDTO {
+  @Expose() user: User;
+  @Expose() accessToken: string;
+  @Expose() refreshToken: string;
 
-export type ValidateUserCmd = {
-  token: string;
-};
+  static toGrpc(res: LoginUserResult) {
+    return {
+      ...res,
+      user: UserDetailResult.toGrpc(res.user),
+    };
+  }
+}
 
-export type GetUserInfoCmd = ValidateUserCmd & {};
+export class ValidateUserCmd extends BaseCmd {
+  @Expose() accessToken: string;
+}
 
-export type UpdateUserCmd = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  phone: string;
-  email: string;
-};
+export class GetUserInfoCmd extends BaseCmd {
+  @Expose() userId: number;
+}
 
-export type CreateUserAddressCmd = {
+export class UpdateUserCmd extends BaseCmd {
+  @Expose() id: number;
+  @Expose() firstName?: string;
+  @Expose() lastName?: string;
+  @Expose() phone?: string;
+  @Expose() email?: string;
+}
+
+export class CreateUserAddressCmd extends BaseCmd {
   address: string;
   city: string;
   postalCode: string;
   country: string;
   phone: string;
-};
+}
 
-export type GetUserAddressDetailCmd = {
+export class GetUserAddressDetailCmd extends BaseCmd {
   addressId: number;
-};
+}
 
-export type DeleteUserAddressCmd = GetUserAddressDetailCmd & {};
+export class DeleteUserAddressCmd extends GetUserAddressDetailCmd {}
 
-export type GetListUserAddressCmd = ValidateUserCmd & {};
+export class GetListUserAddressCmd extends ValidateUserCmd {}
 
-export type DeleteUserAddressResult = {
+export class DeleteUserAddressResult extends BaseDTO {
   success: boolean;
   message: string;
-};
+}
 
-export type CreateUserPaymentCmd = {
+export class CreateUserPaymentCmd extends BaseCmd {
   userId: number;
   provider: number;
   accountNo: string;
-};
+}
 
-export type GetUserPaymentDetailCmd = {
+export class GetUserPaymentDetailCmd extends BaseCmd {
   userPaymentId: number;
-};
+}
 
-export type DeleteUserPaymentCmd = GetUserPaymentDetailCmd & {};
+export class DeleteUserPaymentCmd extends GetUserPaymentDetailCmd {}
 
-export type GetListUserPaymentCmd = ValidateUserCmd & {};
+export class GetListUserPaymentCmd extends ValidateUserCmd {}
 
-export type DeleteUserPaymentResult = {
+export class DeleteUserPaymentResult extends BaseDTO {
   success: boolean;
   message: string;
-};
+}

@@ -6,7 +6,6 @@ import {
   USER_SERVICE_NAME,
   UpdateUserInfoReq,
   UserServiceClient,
-  ValidateUserReq,
 } from '@api/grpc/user';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
@@ -26,10 +25,6 @@ export class GrpcUserTransport {
 
   login(request: LoginUserReq) {
     return processGRPCResult(this.grpcClient.login(request));
-  }
-
-  validate(request: ValidateUserReq) {
-    return processGRPCResult(this.grpcClient.validate(request));
   }
 
   getUserInfo(request: GetUserInfoReq) {
