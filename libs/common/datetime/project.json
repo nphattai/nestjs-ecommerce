@@ -1,7 +1,7 @@
 {
-  "name": "common-datetime",
+  "name": "common-date-time",
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/common/datetime/src",
+  "sourceRoot": "libs/common/date-time/src",
   "projectType": "library",
   "targets": {
     "lint": {
@@ -12,7 +12,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/common/datetime/jest.config.ts"
+        "jestConfig": "libs/common/date-time/jest.config.ts"
       }
     }
   },

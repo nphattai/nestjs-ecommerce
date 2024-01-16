@@ -1,7 +1,7 @@
-# common-datetime
+# common-date-time
 
 This library was generated with [Nx](https://nx.dev).
 
 ## Running unit tests
 
-Run `nx test common-datetime` to execute the unit tests via [Jest](https://jestjs.io).
+Run `nx test common-date-time` to execute the unit tests via [Jest](https://jestjs.io).

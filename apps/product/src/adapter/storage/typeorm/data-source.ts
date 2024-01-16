@@ -7,7 +7,7 @@ export const dataSourceOptions: DataSourceOptions = {
   database: process.env.TYPEORM_DATABASE,
   username: process.env.TYPEORM_USERNAME,
   password: process.env.TYPEORM_PASSWORD,
-  schema: 'public',
+  schema: process.env.TYPEORM_SCHEMA,
   entities: ['./src/adapter/storage/entities/*.entity.ts'],
   migrations: ['./src/adapter/storage/migrations/*.ts'],
   migrationsTableName: 'ms_product_migrations',
