@@ -148,4 +148,13 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
 
     return s;
   }
+
+  protected extendWhere<E extends Entity>(
+    query: FindManyOptions<E>,
+    options: FindOptionsWhere<E>
+  ): FindManyOptions<Entity> {
+    if (!query.where) query.where = {};
+    query.where = { ...query.where, ...options };
+    return query as FindManyOptions<Entity>;
+  }
 }

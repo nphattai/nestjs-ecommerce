@@ -24,7 +24,7 @@ import {
   UpdateProductReq,
 } from '@api/grpc/product';
 import { Controller, Inject } from '@nestjs/common';
-import { FindProductCmd, IProductService, PRODUCT_SERVICE, ProductDetailResult } from '../../port';
+import { FindProductCmd, IProductService, PRODUCT_SERVICE, ProductDetailResult } from '@product/port';
 import { Observable } from 'rxjs';
 
 @Controller()

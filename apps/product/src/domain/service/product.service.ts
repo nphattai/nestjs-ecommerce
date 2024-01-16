@@ -14,7 +14,6 @@ import {
   IProductRepository,
   PRODUCT_REPOSITORY,
 } from '../../port';
-import { Product } from '../model';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -34,28 +33,9 @@ export class ProductService implements IProductService {
   async findProduct(cmd: FindProductCmd): Promise<FindProductResult> {
     this.logger.log(this.findProduct.name, JSON.stringify(cmd));
 
-    const { skip, limit, sort, ...query } = cmd;
+    const { skip, limit, sort, ...filter } = cmd;
 
-    let filter = {};
-
-    if (query.fromPrice !== undefined && query.fromPrice !== null) {
-      filter.price = Greatert;
-    }
-
-    if (query.toPrice !== undefined && query.toPrice !== null) {
-      filter.price = {
-        $lte: query.fromPrice,
-      };
-    }
-
-    filter = {
-      ...query,
-    };
-
-    const res = await this.productRepository.find({ skip, limit, filter });
-    const total = await this.productRepository.count(filter);
-
-    return { data: res, total };
+    return this.productRepository.findByQuery({ skip, limit, filter });
   }
 
   deleteProduct(cmd: DeleteProductCmd): Promise<DeleteProductResult> {

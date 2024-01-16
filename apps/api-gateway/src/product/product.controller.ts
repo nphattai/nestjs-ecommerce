@@ -13,7 +13,7 @@ export class ProductController {
 
   @UseGuards(AuthUserGuard)
   @Get('/')
-  async findProduct(@Query() dto: FindProductDto) {
+  async findProduct(@Query() dto: any) {
     return this.productTransport.findProduct({ ...dto });
   }
 }
