@@ -13,7 +13,8 @@ import {
   UpdateProductInventoryResult,
   IProductRepository,
   PRODUCT_REPOSITORY,
-} from '../../port';
+} from '@product/port';
+import { ProductError, ProductErrorMetadata, ProductException } from '../exception';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -26,8 +27,21 @@ export class ProductService implements IProductService {
   createProduct(product: CreateProductCmd): Promise<ProductDetailResult> {
     throw new Error('Method not implemented.');
   }
-  getProductDetail(cmd: GetProductDetailCmd): Promise<ProductDetailResult> {
-    throw new Error('Method not implemented.');
+
+  async getProductDetail(cmd: GetProductDetailCmd): Promise<ProductDetailResult> {
+    this.logger.log(this.getProductDetail.name, `id: ${cmd.id}`);
+    const { id } = cmd;
+    const product = await this.productRepository.findOne({ filter: { id } });
+
+    if (!product) {
+      throw new ProductException(
+        ProductError.PRODUCT_NOT_FOUND,
+        { message: `Product not found ${id}` },
+        ProductErrorMetadata.PRODUCT_NOT_FOUND
+      );
+    }
+
+    return product;
   }
 
   async findProduct(cmd: FindProductCmd): Promise<FindProductResult> {

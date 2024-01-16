@@ -41,8 +41,8 @@ export class GrpcProductTransport {
     return processGRPCResult(this.grpcClient.createProduct(request));
   }
 
-  getProductDetail(request: GetProductReq): Observable<ProductDetailRes> {
-    throw new Error('Method not implemented.');
+  getProductDetail(request: GetProductReq) {
+    return processGRPCResult(this.grpcClient.getProductDetail(request));
   }
 
   findProduct(request: FindProductReq) {

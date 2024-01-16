@@ -1,4 +1,4 @@
-import { Controller, Get, Logger, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Logger, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthUserGuard } from '../guard';
 import { FindProductDto } from './dto';
 import { GrpcProductTransport } from './grpc-product.transport';
@@ -15,5 +15,11 @@ export class ProductController {
   @Get('/')
   async findProduct(@Query() dto: any) {
     return this.productTransport.findProduct({ ...dto });
+  }
+
+  @UseGuards(AuthUserGuard)
+  @Get('/:id')
+  async getProductDetail(@Param('id') id: number) {
+    return this.productTransport.getProductDetail({ id });
   }
 }
