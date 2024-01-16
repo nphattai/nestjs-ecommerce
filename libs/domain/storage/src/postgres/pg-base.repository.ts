@@ -1,8 +1,18 @@
 import { BaseModel } from '@domain/data';
 import { instanceToPlain } from 'class-transformer';
-import { DeepPartial, EntityManager, Repository } from 'typeorm';
-import { BaseQueryMany, BaseQueryOne, IBaseRepository, UpdatableModel } from '../port';
+import {
+  DeepPartial,
+  EntityManager,
+  FindManyOptions,
+  FindOneOptions,
+  FindOptionsOrder,
+  FindOptionsSelect,
+  FindOptionsWhere,
+  Repository,
+} from 'typeorm';
+import { BaseQueryMany, BaseQueryOne, BaseSelectQuery, IBaseRepository, UpdatableModel } from '../port';
 import { PGBaseEntity } from './pg-base.entity';
+import { Logger } from '@nestjs/common';
 
 export type PGContext = {
   manager: EntityManager;
@@ -11,7 +21,7 @@ export type PGContext = {
 export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extends BaseModel>
   implements IBaseRepository<Model, PGContext>
 {
-  protected constructor(protected readonly repo: Repository<Entity>) {}
+  protected constructor(protected readonly repo: Repository<Entity>, protected readonly logger: Logger) {}
 
   abstract _entityToModel(entity: Entity | null): Model | null;
 
@@ -23,8 +33,18 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     throw new Error('Method not implemented.');
   }
 
-  findOne(query: BaseQueryOne<Model>, ctx?: PGContext | undefined): Promise<Model | null> {
-    throw new Error('Method not implemented.');
+  async findOne(query: BaseQueryOne<Model>, ctx?: PGContext | undefined): Promise<Model | null> {
+    const options = this.craftFindOption(query);
+
+    let entity: Entity | null;
+
+    if (ctx?.manager) {
+      entity = await ctx?.manager.findOne(this.repo.target, options);
+    } else {
+      entity = await this.repo.findOne(options);
+    }
+
+    return entity ? this._entityToModel(entity) : null;
   }
 
   find(query: BaseQueryMany<Model>, ctx?: PGContext | undefined): Promise<Model[]> {
@@ -32,23 +52,43 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
   }
 
   async insertOne(partialModel: Model, ctx?: PGContext | undefined): Promise<Model> {
-    let created: Entity;
-    const entity = this.modelToEntity(partialModel);
-    if (ctx?.manager) {
-      created = await ctx?.manager.save(entity);
-    } else {
-      created = await this.repo.save(entity);
-    }
+    try {
+      let created: Entity;
+      const entity = this.modelToEntity(partialModel);
+      if (ctx?.manager) {
+        created = await ctx.manager.save(entity);
+      } else {
+        created = await this.repo.save(entity);
+      }
 
-    return this._entityToModel(created);
+      return this._entityToModel(created)!;
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
   }
 
-  updateOne(
+  async updateOne(
     filter: Partial<Model>,
     partialModel: UpdatableModel<Model>,
     ctx?: PGContext | undefined
   ): Promise<Model | null> {
-    throw new Error('Method not implemented.');
+    const existed = await this.findOne({ filter }, ctx);
+    if (!existed) {
+      return null;
+    }
+
+    Object.keys(partialModel).forEach((key) => {
+      // @ts-ignore
+      if (partialModel[key] === undefined) {
+        // @ts-ignore
+        delete partialModel[key];
+      }
+    });
+
+    const result = await this.save({ ...existed, ...partialModel }, ctx);
+
+    return result;
   }
 
   count(filter: Partial<Model>): Promise<number> {
@@ -63,7 +103,38 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     throw new Error('Method not implemented.');
   }
 
-  save(model: Model, ctx?: PGContext | undefined): Promise<Model> {
-    throw new Error('Method not implemented.');
+  async save(model: Model, ctx?: PGContext): Promise<Model> {
+    const entity = this.modelToEntity(model);
+    const updated = ctx?.manager
+      ? await ctx.manager.save<Entity>(entity, { reload: true })
+      : await this.repo.save<Entity>(entity, { reload: true });
+    return this._entityToModel(updated)!;
+  }
+
+  protected craftFindOption(query: BaseQueryMany<Model>): FindOneOptions<Entity> & FindManyOptions<Entity> {
+    const { filter, sort, select, skip, limit } = query;
+    const options: FindOneOptions<Entity> & FindManyOptions<Entity> = { where: {} };
+
+    if (filter) options.where = { ...filter } as FindOptionsWhere<Entity>;
+
+    if (sort) options.order = sort as FindOptionsOrder<Entity>;
+
+    if (select) options.select = this.mapSelectQuery(select);
+
+    if (skip) options.skip = skip;
+
+    if (limit) options.take = limit;
+
+    return options;
+  }
+
+  protected mapSelectQuery(select: BaseSelectQuery<Model>): FindOptionsSelect<Entity> {
+    const s: FindOptionsSelect<Entity> = {};
+    for (const field of select) {
+      // @ts-ignore
+      s[field as any] = true;
+    }
+
+    return s;
   }
 }

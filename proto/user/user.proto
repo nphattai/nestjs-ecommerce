@@ -3,13 +3,56 @@ syntax = "proto3";
 package user;
 
 service UserService {
-  rpc helloUser(HelloUserReq) returns (HelloUserRes) {}
+  rpc register(RegisterUserReq) returns (RegisterUserRes) {}
+  rpc login(LoginUserReq) returns (LoginUserRes) {}
+  rpc getUserInfo(GetUserInfoReq) returns (UserDetailRes) {}
+  rpc updateUserInfo(UpdateUserInfoReq) returns (UserDetailRes) {}
 }
 
-message HelloUserReq {
-  string name = 1;
+message UserDetailRes {
+  int32 id = 1;
+  string email = 2;
+  optional string phone = 3;
+  optional string firstName = 4;
+  optional string lastName = 5;
+  string pid = 6;
+  int32 createdAt= 7;
+  int32 updatedAt = 8;
 }
 
-message HelloUserRes {
-  string message = 1;
+message RegisterUserReq {
+  string email = 1;
+  string password = 2;
+}
+
+message RegisterUserRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message LoginUserReq {
+  string email = 1;
+  string password = 2;
+}
+
+message LoginUserRes {
+  UserDetailRes user = 1;
+  string accessToken = 2;
+  string refreshToken = 3;
+}
+
+message GetUserInfoReq {
+  int32 userId = 1;
+}
+
+message GetUserInfoRes {
+  UserDetailRes user = 1;
+}
+
+message UpdateUserInfoReq {
+  int32 id = 1;
+  optional string firstName = 2;
+  optional string lastName = 3;
+  optional string phone = 4;
+  optional string email = 5;
 }

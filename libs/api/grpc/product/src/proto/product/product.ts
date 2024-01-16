@@ -17,36 +17,20 @@ export interface ProductServiceClient {
 }
 
 export interface ProductServiceController {
-  helloProduct(
-    request: HelloProductReq
-  ): Promise<HelloProductRes> | Observable<HelloProductRes> | HelloProductRes;
+  helloProduct(request: HelloProductReq): Promise<HelloProductRes> | Observable<HelloProductRes> | HelloProductRes;
 }
 
 export function ProductServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = ['helloProduct'];
     for (const method of grpcMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method
-      );
-      GrpcMethod('ProductService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcMethod('ProductService', method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
-      const descriptor: any = Reflect.getOwnPropertyDescriptor(
-        constructor.prototype,
-        method
-      );
-      GrpcStreamMethod('ProductService', method)(
-        constructor.prototype[method],
-        method,
-        descriptor
-      );
+      const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
+      GrpcStreamMethod('ProductService', method)(constructor.prototype[method], method, descriptor);
     }
   };
 }

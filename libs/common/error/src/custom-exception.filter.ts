@@ -41,15 +41,14 @@ function handleCommonException(exception: any, request: Request, response: Respo
 function handleException(exception: any) {
   let httpStatus;
   let errorData;
-  if (exception instanceof Exception && exception.metadata) {
-    if (!exception.metadata.internal) {
-      httpStatus = exception.metadata.httpStatus || HttpStatus.INTERNAL_SERVER_ERROR;
-      errorData = {
-        message: exception.customMessage || exception.metadata.message,
-        code: exception.code,
-        details: exception.details,
-      };
-    }
+
+  if (exception instanceof Exception) {
+    httpStatus = exception.metadata?.httpStatus || HttpStatus.INTERNAL_SERVER_ERROR;
+    errorData = {
+      message: exception.customMessage || exception.metadata?.message || 'Server error',
+      code: exception.code,
+      details: exception.details,
+    };
   }
 
   return { httpStatus, errorData };
@@ -58,6 +57,7 @@ function handleException(exception: any) {
 function handleHTTPException(exception: any) {
   let httpStatus;
   let errorData;
+
   if (exception instanceof HttpException) {
     errorData =
       typeof exception.getResponse() === 'string'
