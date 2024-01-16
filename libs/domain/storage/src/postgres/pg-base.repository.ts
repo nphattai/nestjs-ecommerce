@@ -68,12 +68,27 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     }
   }
 
-  updateOne(
+  async updateOne(
     filter: Partial<Model>,
     partialModel: UpdatableModel<Model>,
     ctx?: PGContext | undefined
   ): Promise<Model | null> {
-    throw new Error('Method not implemented.');
+    const existed = await this.findOne({ filter }, ctx);
+    if (!existed) {
+      return null;
+    }
+
+    Object.keys(partialModel).forEach((key) => {
+      // @ts-ignore
+      if (partialModel[key] === undefined) {
+        // @ts-ignore
+        delete partialModel[key];
+      }
+    });
+
+    const result = await this.save({ ...existed, ...partialModel }, ctx);
+
+    return result;
   }
 
   count(filter: Partial<Model>): Promise<number> {
@@ -88,8 +103,12 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     throw new Error('Method not implemented.');
   }
 
-  save(model: Model, ctx?: PGContext | undefined): Promise<Model> {
-    throw new Error('Method not implemented.');
+  async save(model: Model, ctx?: PGContext): Promise<Model> {
+    const entity = this.modelToEntity(model);
+    const updated = ctx?.manager
+      ? await ctx.manager.save<Entity>(entity, { reload: true })
+      : await this.repo.save<Entity>(entity, { reload: true });
+    return this._entityToModel(updated)!;
   }
 
   protected craftFindOption(query: BaseQueryMany<Model>): FindOneOptions<Entity> & FindManyOptions<Entity> {

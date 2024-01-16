@@ -11,8 +11,6 @@ export class CustomExceptionFilter implements ExceptionFilter {
   catch(exception: unknown, host: ArgumentsHost) {
     this.logger.error(exception);
 
-    console.log({ exception });
-
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -43,7 +41,7 @@ function handleCommonException(exception: any, request: Request, response: Respo
 function handleException(exception: any) {
   let httpStatus;
   let errorData;
-  console.log('handleException', exception instanceof Exception);
+
   if (exception instanceof Exception) {
     httpStatus = exception.metadata?.httpStatus || HttpStatus.INTERNAL_SERVER_ERROR;
     errorData = {
@@ -59,7 +57,6 @@ function handleException(exception: any) {
 function handleHTTPException(exception: any) {
   let httpStatus;
   let errorData;
-  console.log('handleException', exception instanceof HttpException);
 
   if (exception instanceof HttpException) {
     errorData =
