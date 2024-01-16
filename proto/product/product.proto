@@ -3,13 +3,154 @@ syntax = "proto3";
 package product;
 
 service ProductService {
-  rpc helloProduct(HelloProductReq) returns (HelloProductRes) {}
+  rpc createProduct(CreateProductReq) returns (ProductDetailRes) {}
+  rpc getProductDetail(GetProductReq) returns (ProductDetailRes) {}
+  rpc findProduct(FindProductReq) returns (ListProductRes) {}
+  rpc deleteProduct(DeleteProductReq) returns (DeleteProductRes) {}
+  rpc updateProduct(UpdateProductReq) returns (ProductDetailRes) {}
+  rpc updateProductInventory(UpdateProductInventoryReq) returns (UpdateProductInventoryRes) {}
+  rpc createDiscount(CreateDiscountReq) returns (DiscountDetailRes) {}
+  rpc getDiscountDetail(GetDiscountReq) returns (DiscountDetailRes) {}
+  rpc getListDiscount(FindDiscountReq) returns (ListDiscountRes) {}
+  rpc deleteDiscount(DeleteDiscountReq) returns (DeleteDiscountRes) {}
+  rpc activeDiscount(ActiveDiscountReq) returns (ActiveDiscountRes) {}
+  rpc disableDiscount(DisableDiscountReq) returns (DisableDiscountRes) {}
 }
 
-message HelloProductReq {
+message ListDiscountRes {
+  int32 total = 1;
+  repeated DiscountDetailRes data = 2;
+}
+
+message DisableDiscountReq {
+  int32 id = 1;
+}
+
+message DisableDiscountRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message ActiveDiscountReq {
+  int32 id = 1;
+}
+
+message ActiveDiscountRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message DeleteDiscountReq {
+  int32 id = 1;
+}
+
+message DeleteDiscountRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message CreateDiscountReq {
   string name = 1;
+  string description = 2;
+  int32 discountPercent = 3;
+  bool active = 4;
 }
 
-message HelloProductRes {
-  string message = 1;
+message GetDiscountReq {
+  int32 id = 1;
+}
+
+message FindDiscountReq {
+  int32 skip = 1;
+  int32 limit = 2;
+  string sort = 3;
+  bool active = 5;
+  int32 fromDiscountPercent = 6;
+  int32 toDiscountPercent = 7;
+}
+
+message DiscountDetailRes {
+  string name = 1;
+  string description = 2;
+  int32 discountPercent = 3;
+  bool active = 4;
+  int32 deletedAt = 5;
+  int32 id = 6;
+  string pid = 7;
+  int32 createdAt = 8;
+  int32 updatedAt = 9;
+}
+
+message UpdateProductInventoryReq {
+  int32 id = 1;
+  int32 quantity = 2;
+}
+
+message UpdateProductInventoryRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message UpdateProductReq {
+  int32 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+  optional string sku = 4;
+  optional int32 price = 5;
+  optional int32 categoryId = 6;
+  optional int32 discountId = 8;
+}
+
+message DeleteProductReq {
+  int32 id = 1;
+}
+
+message DeleteProductRes {
+  bool success = 1;
+  string message = 2;
+}
+
+message FindProductReq {
+  int32 skip = 1;
+  int32 limit = 2;
+  string sort = 3;
+  string name = 4;
+  int32 categoryId = 5;
+  bool isDiscount = 6;
+  int32 fromPrice = 7;
+  int32 toPrice = 8;
+}
+
+message ListProductRes {
+  int32 total = 1;
+  repeated ProductDetailRes data = 2;
+}
+
+message GetProductReq {
+  int32 id = 1;
+}
+
+message CreateProductReq {
+  string name = 1;
+  optional string description = 2;
+  optional string sku = 3;
+  int32 price = 4;
+  int32 categoryId = 5;
+  int32 inventoryId = 6;
+  optional int32 discountId = 7;
+}
+
+message ProductDetailRes {
+  string name = 1;
+  string description = 2;
+  string sku = 3;
+  int32 price = 4;
+  int32 categoryId = 5;
+  int32 inventoryId = 6;
+  int32 discountId = 7;
+  int32 deletedAt = 8;
+  int32 id = 9;
+  string pid = 10;
+  int32 createdAt = 11;
+  int32 updatedAt = 12;
 }

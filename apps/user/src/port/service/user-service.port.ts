@@ -1,9 +1,8 @@
 import { UserDetailRes } from '@api/grpc/user';
-import { fromDateToUnix } from '@common/datetime';
 import { BaseCmd, BaseDTO } from '@domain/data';
 import { Expose } from 'class-transformer';
 import { User, UserAddress, UserPayment } from '../../domain/model';
-
+import { fromDateToUnix } from 'libs/common/datetime/src';
 export const USER_SERVICE = Symbol('USER_SERVICE');
 
 export interface IUserService {
@@ -34,8 +33,8 @@ export class UserDetailResult extends BaseDTO {
   static toGrpc(userDetail: UserDetailResult): UserDetailRes {
     return {
       ...userDetail,
-      createdAt: fromDateToUnix(userDetail.createdAt), //new Date(userDetail.createdAt).getTime(),
-      updatedAt: fromDateToUnix(userDetail.updatedAt), // new Date(userDetail.updatedAt).getTime(),
+      createdAt: fromDateToUnix(userDetail.createdAt),
+      updatedAt: fromDateToUnix(userDetail.updatedAt),
     };
   }
 }

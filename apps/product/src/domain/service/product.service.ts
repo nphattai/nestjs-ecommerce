@@ -1,30 +1,64 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { CreateProductCmd, HelloCmd, HelloRes, IProductService, IUserTransport, USER_TRANSPORT } from '../../port';
-import { IProductRepository, PRODUCT_REPOSITORY } from '../../port/repository/product-repository.port';
-import { Product } from '../model/product.model';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  CreateProductCmd,
+  DeleteProductCmd,
+  DeleteProductResult,
+  FindProductCmd,
+  FindProductResult,
+  GetProductDetailCmd,
+  IProductService,
+  ProductDetailResult,
+  UpdateProductCmd,
+  UpdateProductInventoryCmd,
+  UpdateProductInventoryResult,
+  IProductRepository,
+  PRODUCT_REPOSITORY,
+} from '@product/port';
+import { ProductError, ProductErrorMetadata, ProductException } from '../exception';
 
 @Injectable()
 export class ProductService implements IProductService {
-  constructor(
-    @Inject(USER_TRANSPORT) private readonly userTransport: IUserTransport,
-    @Inject(PRODUCT_REPOSITORY) private readonly productRepository: IProductRepository
-  ) {}
+  private logger: Logger;
 
-  createProduct(req: CreateProductCmd): Promise<Product> {
-    return this.productRepository.insertOne(
-      Product.from({ name: req.name, description: req.description, price: req.price })
-    );
+  constructor(@Inject(PRODUCT_REPOSITORY) private readonly productRepository: IProductRepository) {
+    this.logger = new Logger(ProductService.name);
   }
 
-  async helloUser(req: HelloCmd): Promise<HelloRes> {
-    const res = await this.userTransport.helloUser({ name: req.name });
-
-    const result: HelloRes = { message: res.message };
-
-    return result;
+  createProduct(product: CreateProductCmd): Promise<ProductDetailResult> {
+    throw new Error('Method not implemented.');
   }
 
-  hello(req: HelloCmd): HelloRes {
-    return { message: `Hello product ${req.name}` };
+  async getProductDetail(cmd: GetProductDetailCmd): Promise<ProductDetailResult> {
+    this.logger.log(this.getProductDetail.name, `id: ${cmd.id}`);
+    const { id } = cmd;
+    const product = await this.productRepository.findOne({ filter: { id } });
+
+    if (!product) {
+      throw new ProductException(
+        ProductError.PRODUCT_NOT_FOUND,
+        { message: `Product not found ${id}` },
+        ProductErrorMetadata.PRODUCT_NOT_FOUND
+      );
+    }
+
+    return product;
+  }
+
+  async findProduct(cmd: FindProductCmd): Promise<FindProductResult> {
+    this.logger.log(this.findProduct.name, JSON.stringify(cmd));
+
+    const { skip, limit, sort, ...filter } = cmd;
+
+    return this.productRepository.findByQuery({ skip, limit, filter });
+  }
+
+  deleteProduct(cmd: DeleteProductCmd): Promise<DeleteProductResult> {
+    throw new Error('Method not implemented.');
+  }
+  updateProduct(cmd: UpdateProductCmd): Promise<ProductDetailResult> {
+    throw new Error('Method not implemented.');
+  }
+  updateProductInventory(cmd: UpdateProductInventoryCmd): Promise<UpdateProductInventoryResult> {
+    throw new Error('Method not implemented.');
   }
 }

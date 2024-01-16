@@ -1,23 +1,21 @@
 import { productClient } from '@api/grpc/product';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { MicroserviceOptions } from '@nestjs/microservices';
+import { GrpcErrorInterceptor } from '@util/grpc';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, { ...productClient });
 
-  app.connectMicroservice({ ...productClient });
-
-  app.startAllMicroservices();
+  app.useGlobalInterceptors(new GrpcErrorInterceptor());
 
   process.on('uncaughtException', (err) => {
     new Logger().error(err);
   });
 
-  const port = process.env.PORT || 4002;
-
-  await app.listen(port).then(() => {
-    Logger.log(`Product Application is running on port ${port}`, 'Product');
+  await app.listen().then(() => {
+    Logger.log(`Product microservice is running`);
   });
 }
 

@@ -14,7 +14,7 @@ async function bootstrap() {
   });
 
   await app.listen().then(() => {
-    Logger.log(`User Application is running on `);
+    Logger.log(`User microservice is running`);
   });
 }
 

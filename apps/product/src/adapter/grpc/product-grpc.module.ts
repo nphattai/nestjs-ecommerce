@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ProductModule } from '@product/domain';
 import { ProductGrpcController } from './product-grpc.controller';
-import { ProductModule } from '../../domain';
 
 @Module({
   imports: [ProductModule],
