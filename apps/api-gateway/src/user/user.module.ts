@@ -7,6 +7,7 @@ import { UserController } from './user.controller';
 @Module({
   imports: [ClientsModule.register([{ name: USER_CLIENT, ...userClient }])],
   providers: [GrpcUserTransport],
+  exports: [GrpcUserTransport],
   controllers: [UserController],
 })
 export class UserModule {}
