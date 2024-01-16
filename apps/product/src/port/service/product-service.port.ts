@@ -80,7 +80,7 @@ export class ProductDetailResult extends BaseDTO implements Product {
   static toGrpc(userDetail: ProductDetailResult): ProductDetailRes {
     return {
       ...userDetail,
-      deletedAt: fromDateToUnix(userDetail.deletedAt),
+      deletedAt: userDetail.deletedAt ? fromDateToUnix(userDetail.deletedAt) : null,
       createdAt: fromDateToUnix(userDetail.createdAt),
       updatedAt: fromDateToUnix(userDetail.updatedAt),
     };

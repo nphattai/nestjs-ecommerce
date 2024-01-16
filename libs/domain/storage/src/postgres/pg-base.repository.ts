@@ -47,8 +47,18 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     return entity ? this._entityToModel(entity) : null;
   }
 
-  find(query: BaseQueryMany<Model>, ctx?: PGContext | undefined): Promise<Model[]> {
-    throw new Error('Method not implemented.');
+  async find(query: BaseQueryMany<Model>, ctx?: PGContext | undefined): Promise<Model[]> {
+    const options = this.craftFindOption(query);
+
+    let entity: Entity[] = [];
+
+    if (ctx?.manager) {
+      entity = await ctx?.manager.find(this.repo.target, options);
+    } else {
+      entity = await this.repo.find(options);
+    }
+
+    return entity.map((e) => this._entityToModel(e)!);
   }
 
   async insertOne(partialModel: Model, ctx?: PGContext | undefined): Promise<Model> {
@@ -91,8 +101,9 @@ export abstract class PGBaseRepository<Entity extends PGBaseEntity, Model extend
     return result;
   }
 
-  count(filter: Partial<Model>): Promise<number> {
-    throw new Error('Method not implemented.');
+  async count(filter: Partial<Model>): Promise<number> {
+    const options = this.craftFindOption({ filter });
+    return this.repo.count(options);
   }
 
   upsertOne(filter: Partial<Model>, model: Model, ctx?: PGContext | undefined): Promise<Model> {
