@@ -24,24 +24,20 @@ import {
   UpdateProductReq,
 } from '@api/grpc/product';
 import { Controller, Inject } from '@nestjs/common';
-import {
-  FindProductCmd,
-  GetProductDetailCmd,
-  IProductService,
-  PRODUCT_SERVICE,
-  ProductDetailResult,
-} from '@product/port';
+import { FindProductCmd, GetProductDetailCmd, IProductService, PRODUCT_SERVICE, ProductDetailResult } from '../../port';
 import { Observable } from 'rxjs';
+import { CreateProductCmd } from '../../port';
 
 @Controller()
 @ProductServiceControllerMethods()
 export class ProductGrpcController implements ProductServiceController {
   constructor(@Inject(PRODUCT_SERVICE) private readonly productService: IProductService) {}
 
-  createProduct(
-    request: CreateProductReq
-  ): ProductDetailRes | Promise<ProductDetailRes> | Observable<ProductDetailRes> {
-    throw new Error('Method not implemented.');
+  async createProduct(request: CreateProductReq) {
+    const cmd = CreateProductCmd.init({ ...request });
+    const response = await this.productService.createProduct(cmd);
+
+    return ProductDetailResult.toGrpc(response);
   }
 
   async getProductDetail(request: GetProductReq) {
