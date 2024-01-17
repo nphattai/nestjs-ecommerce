@@ -8,5 +8,5 @@
     "target": "es2021"
   },
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"],
-  "include": ["src/**/*.ts", "../../libs/user/src/adapter/transport/grpc-transport/grpc-user.transport.ts", "../../libs/product/src/adapter/transport/grpc-transport/grpc-product.transport.ts"]
+  "include": ["src/**/*.ts"]
 }

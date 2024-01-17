@@ -1,11 +1,11 @@
-import { GatewayError, GatewayErrorMetadata, GatewayException } from '@api-gateway/exception';
-import { GrpcUserTransport } from '@api-gateway/user/grpc-user.transport';
+import { GatewayError, GatewayErrorMetadata, GatewayException } from '@api-gateway/domain/exception';
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { IUserConfig } from '@user/configuration';
 import { JWTPayload } from '@utils/jwt';
 import { Request } from 'express';
+import { GrpcUserTransport } from 'libs/user/src/adapter/transport/grpc-transport';
 
 @Injectable()
 export class AuthUserGuard implements CanActivate {

@@ -6,15 +6,16 @@ import {
   FindProductCmd,
   FindProductResult,
   GetProductDetailCmd,
+  IProductRepository,
   IProductService,
+  PRODUCT_REPOSITORY,
   ProductDetailResult,
   UpdateProductCmd,
   UpdateProductInventoryCmd,
   UpdateProductInventoryResult,
-  IProductRepository,
-  PRODUCT_REPOSITORY,
-} from '@product/port';
+} from '../../port';
 import { ProductError, ProductErrorMetadata, ProductException } from '../exception';
+import { Product } from '../model';
 
 @Injectable()
 export class ProductService implements IProductService {
@@ -24,8 +25,11 @@ export class ProductService implements IProductService {
     this.logger = new Logger(ProductService.name);
   }
 
-  createProduct(product: CreateProductCmd): Promise<ProductDetailResult> {
-    throw new Error('Method not implemented.');
+  async createProduct(cmd: CreateProductCmd): Promise<ProductDetailResult> {
+    this.logger.log(this.createProduct.name, JSON.stringify(cmd));
+    const product = Product.from({ ...cmd });
+    const result = await this.productRepository.save(product);
+    return result;
   }
 
   async getProductDetail(cmd: GetProductDetailCmd): Promise<ProductDetailResult> {
