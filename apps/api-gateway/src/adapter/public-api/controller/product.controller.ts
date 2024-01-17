@@ -1,7 +1,7 @@
 import { Controller, Get, Logger, Param, Query, UseGuards } from '@nestjs/common';
 import { AuthUserGuard } from '../guard';
-import { FindProductDto } from './dto';
-import { GrpcProductTransport } from './grpc-product.transport';
+import { FindProductDto } from '../dto';
+import { GrpcProductTransport } from 'libs/product/src/adapter/transport/grpc-transport/grpc-product.transport';
 
 @Controller('product')
 export class ProductController {

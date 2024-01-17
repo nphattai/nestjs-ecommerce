@@ -1,6 +1,6 @@
 import { Body, Controller, Logger, Post } from '@nestjs/common';
-import { CreateProductDto } from './dto';
-import { GrpcProductTransport } from './grpc-product.transport';
+import { GrpcProductTransport } from 'libs/product/src';
+import { CreateProductDto } from '../dto';
 
 @Controller('product')
 export class ProductController {

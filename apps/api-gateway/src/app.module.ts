@@ -2,15 +2,13 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import configuration from './configuration';
-import { UserModule } from './user/user.module';
-import { ProductModule } from './product/product.module';
+import { PublicApiModule } from './adapter/public-api';
 
 @Module({
   imports: [
     JwtModule.register({ global: true }),
     ConfigModule.forRoot({ isGlobal: true, load: [configuration] }),
-    UserModule,
-    ProductModule,
+    PublicApiModule,
   ],
 })
 export class AppModule {}

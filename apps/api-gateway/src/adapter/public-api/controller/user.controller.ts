@@ -1,8 +1,8 @@
-import { AuthUserGuard } from '@api-gateway/guard';
+import { AuthUserGuard } from '@api-gateway/adapter/public-api/guard';
 import { UpdateUserInfoReq } from '@api/grpc/user';
 import { Body, Controller, Get, Logger, Patch, Post, Request, UseGuards } from '@nestjs/common';
-import { RegisterUserDto } from './dto';
-import { GrpcUserTransport } from './grpc-user.transport';
+import { RegisterUserDto } from '../dto';
+import { GrpcUserTransport } from 'libs/user/src/adapter/transport/grpc-transport';
 
 @Controller('user')
 export class UserController {

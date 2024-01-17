@@ -16,10 +16,8 @@
     "strictPropertyInitialization": false,
     "baseUrl": ".",
     "paths": {
-      "@api-gateway/*": ["apps/api-gateway/src/*"],
       "@api-admin/*": ["apps/api-admin/src/*"],
-      "@product/*": ["apps/product/src/*"],
-      "@user/*": ["apps/user/src/*"],
+      "@api-gateway/*": ["apps/api-gateway/src/*"],
       "@api/grpc/product": ["libs/api/grpc/product/src/index.ts"],
       "@api/grpc/user": ["libs/api/grpc/user/src/index.ts"],
       "@common/datetime": ["libs/common/datetime/src/index.ts"],
@@ -29,6 +27,10 @@
       "@domain/config": ["libs/domain/config/src/index.ts"],
       "@domain/data": ["libs/domain/data/src/index.ts"],
       "@domain/storage": ["libs/domain/storage/src/index.ts"],
+      "@lib-user": ["libs/user/src/index.ts"],
+      "@lib-product": ["libs/product/src/index.ts"],
+      "@product/*": ["apps/product/src/*"],
+      "@user/*": ["apps/user/src/*"],
       "@util/grpc": ["libs/utils/grpc/src/index.ts"],
       "@utils/jwt": ["libs/utils/jwt/src/index.ts"]
     }
